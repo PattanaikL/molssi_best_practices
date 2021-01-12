@@ -11,17 +11,40 @@ import numpy as np
 
 @pytest.fixture
 def methane_molecule(scope="module"):
-    symbols = np.array(['C', 'H', 'H', 'H'])
+    symbols = np.array(["C", "H", "H", "H"])
 
-    coordinates = np.array([
-        [1, 1, 1],
-        [2.4, 1, 1],
-        [-0.4, 1, 1],
-        [1, 1, 2.4],
-        [1, 1, -0.4]
-    ])
+    coordinates = np.array(
+        [[1, 1, 1], [2.4, 1, 1], [-0.4, 1, 1], [1, 1, 2.4], [1, 1, -0.4]]
+    )
 
     return symbols, coordinates
+
+
+@pytest.mark.parametrize(
+    "p1, p2, p3, expected_value",
+    [
+        (
+            np.array([np.sqrt(2) / 2, np.sqrt(2) / 2, 0]),
+            np.array([0, 0, 0]),
+            np.array([1, 0, 0]),
+            45,
+        ),
+        (np.array([0, 0, -1]), np.array([0, 1, 0]), np.array([1, 0, 0]), 60),
+        (
+            np.array([np.sqrt(3) / 2, (1 / 2), 0]),
+            np.array([0, 0, 0]),
+            np.array([1, 0, 0]),
+            30,
+        ),
+    ],
+)
+def test_calculate_angle_many(p1, p2, p3, expected_value):
+
+    calculated_value = molecool.calculate_angle(p1, p2, p3, degrees=True)
+
+    assert expected_value == pytest.approx(
+        calculated_value
+    ), f"{calculated_value} {expected_value}"
 
 
 def test_calculate_angle():
